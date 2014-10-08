@@ -254,7 +254,7 @@ public struct Query {
 
     private var orderClause: String? {
         if order.count == 0 { return nil }
-        let mapped = order.map { "\(Query.quote($0.0)) \($0.1.rawValue)" }
+        let mapped = order.map { "\(Query.quote($0.0)) \($0.1.toRaw())" }
         let joined = Swift.join(", ", mapped)
         return "ORDER BY \(joined)"
     }

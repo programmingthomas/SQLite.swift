@@ -243,7 +243,7 @@ public final class Database {
     ///
     /// :returns: The last statement executed, successful or not.
     private func transaction(mode: TransactionMode, _ statements: [@autoclosure () -> Statement]) -> Statement {
-        var transaction = run("BEGIN \(mode.rawValue) TRANSACTION")
+        var transaction = run("BEGIN \(mode.toRaw()) TRANSACTION")
         // FIXME: rdar://18479820 // for statement in statements { transaction = transaction && statement() }
         for idx in 0..<statements.count { transaction = transaction && statements[idx]() }
         transaction = transaction && run("COMMIT TRANSACTION")
@@ -328,7 +328,9 @@ public final class Database {
     }
 
     private func try(block: @autoclosure () -> Int32) {
-        if block() != SQLITE_OK { assertionFailure("\(lastError)") }
+        if block() != SQLITE_OK {
+            println("\(lastError)")
+        }
     }
 
     // MARK: - Query Building

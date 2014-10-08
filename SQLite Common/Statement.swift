@@ -229,7 +229,7 @@ extension Statement: GeneratorType {
             case SQLITE_TEXT:
                 row.append(String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(handle, Int32(idx))))!)
             case let type:
-                assertionFailure("unsupported column type: \(type)")
+                println("unsupported column type: \(type)")
             }
         }
         return row
