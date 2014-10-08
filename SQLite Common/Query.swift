@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 //
 
+// This struct allows you to pragmatically create SQLite queries without the need to hand write the SQL (like how Core Data allows you to prepare statements using NSPredicate).
 public struct Query {
 
     private var database: Database
@@ -32,7 +33,7 @@ public struct Query {
 
     // MARK: - Keywords
 
-    public enum Direction: String {
+    public enum SortDirection: String {
 
         case ASC = "ASC"
 
@@ -45,11 +46,11 @@ public struct Query {
     private var conditions: String?
     private var bindings = [Datatype?]()
     private var groupByHaving: ([String], String?, [Datatype?])?
-    private var order = [String, Direction]()
+    private var order = [String, SortDirection]()
     private var limit: Int?
     private var offset: Int?
 
-    // MARK: -
+    // MARK: - Query preparation
 
     public func select(columnNames: String...) -> Query {
         var query = self
@@ -135,15 +136,15 @@ public struct Query {
         return order(by.map { ($0, .ASC) })
     }
 
-    public func order(by: String, _ direction: Direction) -> Query {
+    public func order(by: String, _ direction: SortDirection) -> Query {
         return order([(by, direction)])
     }
 
-    public func order(by: (String, Direction)...) -> Query {
+    public func order(by: (String, SortDirection)...) -> Query {
         return order(by)
     }
 
-    private func order(by: [(String, Direction)]) -> Query {
+    private func order(by: [(String, SortDirection)]) -> Query {
         var query = self
         query.order += by
         return query
@@ -155,19 +156,19 @@ public struct Query {
         return query.order(by)
     }
 
-    public func reorder(by: String, _ direction: Direction) -> Query {
+    public func reorder(by: String, _ direction: SortDirection) -> Query {
         var query = self
         query.order.removeAll()
         return query.order(by, direction)
     }
 
-    public func reorder(by: (String, Direction)...) -> Query {
+    public func reorder(by: (String, SortDirection)...) -> Query {
         var query = self
         query.order.removeAll()
         return query.order(by)
     }
 
-    private func reorder(by: [(String, Direction)]) -> Query {
+    private func reorder(by: [(String, SortDirection)]) -> Query {
         var query = self
         query.order.removeAll()
         return query.order(by)
