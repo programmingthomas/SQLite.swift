@@ -187,6 +187,15 @@ class QueryTests: XCTestCase {
             "OFFSET 2"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
+    
+    func test_SQL_isEscapedProperly() {
+        //http://xkcd.com/327/
+        let query = users
+            .filter("email = ?", "Robert\"); DROP TABLE users;--")
+            .order("email", .ASC)
+        let SQL = "SELECT * FROM users WHERE email = ? ORDER BY email ASC";
+        ExpectExecutions(db, [SQL: 0], { _ in for _ in query {} })
+    }
 
     func test_count_returnsCount() {
         XCTAssertEqual(0, users.count)
